@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>MOCWO</title>
+    <link rel = "icon" type = "image/png" sizes = "16x16" href = "{{url_for('static',filename='img/icon_logo.png')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='bootstrap/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='fonts/font-awesome.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/Footer-Basic.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/Footer-Dark.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/styles.css')}}">
+</head>
+
+<body>
+    <div>
+        <nav class="navbar navbar-light navbar-expand-md">
+            <div class="container-fluid"><a class="navbar-brand" href="#"><img style="height: 50px;" src="{{url_for('static',filename='img/mocwo_logo.jpg')}}"></a>
+                <div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="dropdown" style="margin-right: 82px;"><a class="dropdown-toggle" aria-expanded="false" data-toggle="dropdown" href="#">admin</a>
+                                <div class="dropdown-menu"><a class="dropdown-item" href="{{ url_for('addContact') }}" style="font-size: 14px;">Add Contact</a><a class="dropdown-item" href="{{ url_for(bulkContacts') }}" style="font-size: 14px;">Add Bulk Contacts</a><a class="dropdown-item" href="{{ url_for(createGroup') }}" style="font-size: 14px;">Create Group</a><a class="dropdown-item" href="{{ url_for(changePassword) }}" style="font-size: 14px;">Change Password</a>
+                                    <hr style="padding: 0;height: 0px;margin: 1.5px;"><a class="dropdown-item" href="{{ url_for('logout') }}" style="font-size: 14px;">Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <hr style="margin-top: 4px;">
+        <div>
+            <h3 class="text-center">MOCWO BULK SMS APP</h3>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                    <span>{{ message }}</span>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                <div>
+                    <div class="row text-break justify-content-center">
+                        <div class="col-11 col-md-9 col-xl-8">
+                            <div class="row">
+                                <div class="col"><a class="btn btn-primary" role="button" style="width: 100%;" href="{{ url_for('quickSMS') }}">Send SMS</a></div>
+                            </div></br>
+                            <div class="row">
+                                <div class="col"><a class="btn btn-primary text-break" role="button" style="width: 100%;" href="{{ url_for('sendGroupSMS) }}">Send Group SMS</a></div>
+                            </div></br>
+                            <div class="row">
+                                <div class="col"><a class="btn btn-primary text-break" role="button" style="width: 100%;" href="{{ url_for('addContact) }}">Add Contact</a></div>
+                            </div></br>
+                            <div class="row">
+                                <div class="col"><a class="btn btn-primary text-break" role="button" style="width: 100%;" href="{{ url_for('bulkContacts') }}">Add Bulk Contacts</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><br><br><br>
+    <div class="footer-basic" style="height: 11.2px;">
+        <footer style="margin-top: -48px;">
+            <hr>
+            <p class="copyright">MOCWO© 2022</p>
+        </footer>
+    </div>
+    <script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
+    <script src="{{url_for('static',filename='bootstrap/js/bootstrap.min.js')}}"></script>
+</body>
+
+</html>
