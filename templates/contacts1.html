@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>MOCWO</title>
+    <link rel = "icon" type = "image/png" sizes = "16x16" href = "{{url_for('static',filename='img/icon_logo.png')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='bootstrap/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='fonts/font-awesome.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/Footer-Basic.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/Footer-Dark.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/styles.css')}}">
+</head>
+
+<body>
+    <div>
+        <nav class="navbar navbar-light navbar-expand-md">
+            <div class="container-fluid"><a class="navbar-brand" href="#"><img style="height: 50px;" src="assets/img/mocwo_logo.jpg"></a>
+                <div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="dropdown" style="margin-right: 82px;"><a class="dropdown-toggle" aria-expanded="false" data-toggle="dropdown" href="#">admin</a>
+                                <div class="dropdown-menu"><a class="dropdown-item" href="{{ url_for('addContact') }}" style="font-size: 14px;">Add Contact</a><a class="dropdown-item" href="{{ url_for(bulkContacts') }}" style="font-size: 14px;">Add Bulk Contacts</a><a class="dropdown-item" href="{{ url_for(createGroup') }}" style="font-size: 14px;">Create Group</a><a class="dropdown-item" href="{{ url_for(changePassword) }}" style="font-size: 14px;">Change Password</a>
+                                    <hr style="padding: 0;height: 0px;margin: 1.5px;"><a class="dropdown-item" href="{{ url_for('logout') }}" style="font-size: 14px;">Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <hr style="margin-top: 3px;">
+        <div>
+            <h3 class="text-center">Contacts</h3>
+        </div>
+        <div class="card" style="border-color: rgb(255,255,255);">
+            <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                    <span>{{ message }}</span>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                <div>
+                    <div class="row text-break justify-content-center">
+                        <div class="col-11 col-md-12 col-lg-12 col-xl-10">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend"></div><input class="form-control autocomplete" type="text" placeholder="search">
+                                        <div class="input-group-append"><button class="btn btn-primary" type="button"><i class="fa fa-search"></i></button></div>
+                                    </div>
+                                </div>
+                            </div></br>
+                            <div class="row">
+                                <div class="col offset-xl-0">
+                                    <div class="table-responsive table mt-2" id="dataTable-1" role="grid" aria-describedby="dataTable_info">
+                                        <table class="table dataTable my-0" id="dataTable">
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align: left;">Name</th>
+                                                    <th style="text-align: left;">No.</th>
+                                                    <th style="text-align: left;">Group</th>
+                                                    <th style="text-align: left;">Options</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Airi Satou</td>
+                                                    <td>Accountant</td>
+                                                    <td>Tokyo</td>
+                                                    <td><a class="btn btn-sm" role="button" href="admin/sendSMS/{{id}}"><i class="fa fa-send" style="color: var(--success);"></i></a><a class="btn btn-sm" role="button" href="admin/edit/{{id}}" style="color: var(--blue);"><i class="fa fa-edit" style="font-size: 16px;"></i></a><a class="btn btn-sm" role="button" href="admin/delete/{{id}}" style="color: var(--red);"><i class="fa fa-close" style="font-size: 16px;"></i></a></td>
+                                                </tr>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td style="text-align: left;"><strong>Name</strong></td>
+                                                    <td style="text-align: left;"><strong>No.</strong></td>
+                                                    <td style="text-align: left;"><strong>Group</strong></td>
+                                                    <td style="font-weight: bold;text-align: left;">Edit</td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 align-self-center">
+                                            <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 27</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                                <ul class="pagination">
+                                                    <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                    <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-basic" style="height: 11.2px;">
+        <footer style="margin-top: -48px;">
+            <hr>
+            <p class="copyright">MOCWO© 2022</p>
+        </footer>
+    </div>
+    <script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
+    <script src="{{url_for('static',filename='bootstrap/js/bootstrap.min.js')}}"></script>
+</body>
+
+</html>
