@@ -2,7 +2,11 @@ from flask import Flask,render_template,request,redirect,flash,url_for,g,session
 from flask_mysqldb import MySQL
 import os
 import bcrypt
+from werkzeug.utils import secure_filename
 from mnotifySMS import sendSMS
+import pandas as pd
+from pandas.io import sql
+
 app=Flask(__name__)
 
 app.secret_key =os.urandom(24)
@@ -25,7 +29,23 @@ def home():
 @app.route('/admin/addContact',methods=['GET','POST'])
 def addContact():
     if g.loggedIn and g.type=='admin':
-        return render_template('addContact.html')
+        if request.method=='POST':
+            name=request.form['name']
+            phone_number=request.form['phone_number']
+            group=request.form['group']
+            try:
+                cur=mysql.connection.cursor()
+                cur.execute("INSERT into members(name, phone_number,groups_id) VALUES (%s,%s,%s)",(name,phone_number,group))
+                mysql.connection.commit()
+                flash("Contact added successfully","success")
+            except:
+                mysql.connection.rollback()
+                flash("Contact Already Exists in Database","danger")
+        cur=mysql.connection.cursor()
+        cur.execute("SELECT id,name FROM `groups`")
+        groups=cur.fetchall()
+        
+        return render_template('addContact.html',groups=groups)
     else:
         return redirect(url_for("login"))
 @app.route('/admin/quickSMS',methods=['GET','POST'])
@@ -60,6 +80,26 @@ def quickSMS():
 @app.route('/admin/addBulkContacts',methods=['GET','POST'])
 def addBulkContacts():
     if g.loggedIn and g.type=='admin':
+        if request.method=='POST':
+            if 'bulkContacts' not in request.files:
+                flash('File not uploaded',"danger")
+                return redirect(request.url)
+            group_id=request.form['group_id']
+            file = request.files['bulkContacts']
+            # if user does not select file, browser also
+            # submit an empty part without filename
+            if file.filename == '':
+                flash('No selected file','danger')
+                return redirect(request.url)
+            filePd=pd.read_excel(file,sheet_name=0)
+            #add group id to dataframe
+            filePd['groups_id']=group_id
+            cur=mysql.connection
+            sql.write_frame(filePD, con=cur, name='members', 
+                if_exists='append', flavor='mysql')
+            #filePd.to_sql(name="members",con=cur,if_exists='append',method='multi')
+            print(filePd,flush=True)
+            
         return render_template('addBulkContacts.html')
     else:
         return redirect(url_for("login"))
@@ -93,7 +133,10 @@ def changePassword():
 @app.route('/admin/bulkContacts',methods=['GET','POST'])
 def bulkContacts():
     if g.loggedIn and g.type=='admin':
-        return render_template('bulkContacts.html')
+        cur=mysql.connection.cursor()
+        cur.execute("SELECT id,name FROM `groups`")
+        groups=cur.fetchall()
+        return render_template('addBulkContacts.html',groups=groups)
     else:
         return redirect(url_for("login"))
     

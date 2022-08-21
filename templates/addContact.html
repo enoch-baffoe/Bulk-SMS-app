@@ -19,15 +19,15 @@
             <form action="{{ url_for('addContact') }}" method="post">
                 <div class="form-row">
                     <div class="col">
-                        <div class="form-group"><label for="username"><strong>Name</strong></label><input class="form-control" type="text" id="username" placeholder="Name" name="username" value="{{name}}"></div>
+                        <div class="form-group"><label for="username"><strong>Name</strong></label><input class="form-control" type="text" id="username" placeholder="Name" name="name" value="{{name}}"></div>
                     </div>
                     <div class="col">
-                        <div class="form-group"><label for="email"><strong>Phone Number</strong><br></label><input class="form-control" type="tel" name="phoneNumber" placeholder="phone Number" value="{{number}}"></div>
+                        <div class="form-group"><label for="email"><strong>Phone Number</strong><br></label><input class="form-control" type="tel" name="phone_number" placeholder="phone Number" value="{{number}}"></div>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="col">
-                        <div class="form-group"><label for="first_name"><strong>Contact group</strong><br></label><select class="form-control">
+                        <div class="form-group"><label for="first_name"><strong>Contact group</strong><br></label><select class="form-control" name="group">
                                 <optgroup label="Select Group">
                                     {%for item in groups%}
                                     <option value="{{item.id}}">{{item.name}}</option>
