@@ -19,10 +19,10 @@
             <form action="{{ url_for('addContact') }}" method="post">
                 <div class="form-row">
                     <div class="col">
-                        <div class="form-group"><label for="username"><strong>Name</strong></label><input class="form-control" type="text" id="username" placeholder="Name" name="name" value="{{name}}"></div>
+                        <div class="form-group"><label for="name"><strong>Name</strong></label><input class="form-control" type="text" id="name" placeholder="Name" name="name" value="{{name}}"></div>
                     </div>
                     <div class="col">
-                        <div class="form-group"><label for="email"><strong>Phone Number</strong><br></label><input class="form-control" type="tel" name="phone_number" placeholder="phone Number" value="{{number}}"></div>
+                        <div class="form-group"><label for="phone_number"><strong>Phone Number</strong><br></label><input class="form-control" type="tel" name="phone_number" id="phone_number" placeholder="phone Number" value="{{number}}"></div>
                     </div>
                 </div>
                 <div class="form-row">

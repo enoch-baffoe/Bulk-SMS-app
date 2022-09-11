@@ -19,6 +19,33 @@ app.config["MYSQL_CURSORCLASS"] = "DictCursor"
 
 mysql=MySQL(app)
 
+
+def check_phone_number(phone):
+
+    if str(phone).isdigit() and (len(str(phone)) == 10 or len(str(phone)) == 9 or len(str(phone))==12):
+        return True
+    else:
+        return False
+
+
+def check_name(name):
+    name= name.replace("."," ")
+    name = name.translate({ord(c): None for c in "- "})
+    
+    # pass the regular expression
+    # and the string into the fullmatch() method
+    if name.isalpha():
+        return True
+    else:
+        return False
+
+
+def confirm_input(name,phone_number):
+    if (check_name(name) and check_phone_number(phone_number)):
+        return True
+    return False
+
+
 @app.route('/',methods=['GET','POST'])
 def home():
     if g.loggedIn and g.type=='admin':
@@ -33,6 +60,15 @@ def addContact():
             name=request.form['name']
             phone_number=request.form['phone_number']
             group=request.form['group']
+            meetsRequirement=True
+            if not check_name(name):
+                flash('Name does not meet specified format','warning')
+                meetsRequirement=False
+            if not check_phone_number:
+                flash('Phone Number does not match specified format','warning')
+                meetsRequirement=False
+            if not meetsRequirement:
+                return redirect(request.referrer)
             try:
                 cur=mysql.connection.cursor()
                 cur.execute("INSERT into members(name, phone_number,groups_id) VALUES (%s,%s,%s)",(name,phone_number,group))
@@ -67,8 +103,8 @@ def quickSMS():
                 
             # we remove duplicates
             contactList = list(set(contactList))
-            sendSMS(message,contactList)
-            #print (contactList,flush=True)
+            #sendSMS(message,contactList)
+            print (contactList,flush=True)
             flash("Message Delivered","success")
             return redirect(url_for('home'))
         cur=mysql.connection.cursor()
@@ -94,13 +130,44 @@ def addBulkContacts():
             filePd=pd.read_excel(file,sheet_name=0)
             #add group id to dataframe
             filePd['groups_id']=group_id
-            cur=mysql.connection
-            sql.write_frame(filePD, con=cur, name='members', 
-                if_exists='append', flavor='mysql')
+            cur=mysql.connection.cursor()
+            meetsRequirement=True
+            newMembersList=[]
+            i=1
+            try:
+                i=i+1
+                #for i in range(0, len(filePd)):
+                    #print(filePd.iloc[i]['phone_number'], filePd.iloc[i]['name'],flush=True)
+                for index,row in filePd.iterrows():
+                    if check_phone_number(row['phone_number']) ==False:
+                        meetsRequirement==False
+                        flash('Phone Number at line '+str(i)+ ' does not meet specified format','warning')
+                    if check_name(row['name'])==False:
+                        meetsRequirement=False
+                        flash('Name at line '+str(i)+ ' does not meet specified format','warning')
+                    if meetsRequirement==False:
+                        break
+                    else:
+                        k = (row['name'],row['phone_number'],row['groups_id'])
+                        newMembersList.append(k)
+                        
+                print(newMembersList,flush=True)
+            except BaseException as error:
+                    flash('An error occured. Check if you inserted the correct file following all the rules given','warning')
+                    print('An exception occurred: {}'.format(error),flush=True)
             #filePd.to_sql(name="members",con=cur,if_exists='append',method='multi')
-            print(filePd,flush=True)
-            
-        return render_template('addBulkContacts.html')
+            # print(filePd,flush=True)
+            try:
+                cur=mysql.connection.cursor()
+                cur.executemany('INSERT INTO members(name,phone_number,groups_id) VALUES (%s,%s,%s)',newMembersList)
+                mysql.connection.commit()
+                flash('Lecturers successfuly added to database','success')
+            except mysql.connection.IntegrityError:
+                mysql.connection.rollback()
+                cur.close
+                flash('Data could not be inserted. Some Lecturers may already exist in the database','warning')
+                
+        return redirect(request.referrer) 
     else:
         return redirect(url_for("login"))
     
@@ -126,6 +193,29 @@ def createGroup():
 @app.route('/admin/changePassword',methods=['GET','POST'])
 def changePassword():
     if g.loggedIn and g.type=='admin':
+        if request.method == "POST":
+            oldPassword = request.form["password"]
+            newPassword = request.form["newPassword"]
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT hashed_password from admin where id=%s", [g.id])
+            is_account = cur.fetchone()
+            hashed_password = is_account["hashed_password"]
+            if bcrypt.checkpw(
+                oldPassword.encode("utf-8"), hashed_password.encode("utf-8")
+            ):
+                newHashedPassword = bcrypt.hashpw(
+                    newPassword.encode("utf-8"), bcrypt.gensalt()
+                )
+                cur.execute(
+                    "UPDATE admin SET hashed_password=%s WHERE id=%s",
+                    (newHashedPassword, g.id),
+                )
+                mysql.connection.commit()
+                cur.close()
+                flash("Password changed successfully", "success")
+                return redirect(request.referrer)
+            else:
+                flash("Password is incorrect", "warning")
         return render_template('changePassword.html')
     else:
         return redirect(url_for("login"))
@@ -141,7 +231,12 @@ def bulkContacts():
         return redirect(url_for("login"))
     
 
-    
+ #----------------------------------------------
+ #------TO DO
+ # show contacts
+ #edit contact
+ # Delete contact
+ #---------------------------------   
 
 @app.route('/admin/resetPassword',methods=['GET','POST'])
 def resetPassword():

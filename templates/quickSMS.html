@@ -20,8 +20,9 @@
                 <div class="row text-break justify-content-center">
                     <div class="col-11 col-md-9 col-xl-8">
                         <form method="post" action="{{url_for('quickSMS')}}">
-                            <div class="form-group"><label for="message"><strong>Message</strong><br></label><textarea class="form-control form-control-lg" id="message" rows="4" name="message" autocomplete="on" maxlength="160" required="" placeholder="type sms here">{{message}}</textarea></div>
-                            <div class="form-group"><label for="contacts"><strong>contacts</strong><br></label><textarea class="form-control" id="contacts" rows="4" name="contacts">{{contacts}}</textarea><span style="text-align: center;">separate different contacts with a coma ","</span></div><span style="font-weight: bold;">Select groups</span>
+                            <div class="form-group"><label for="message"><strong>Message</strong><br></label><textarea class="form-control form-control-lg" id="message" rows="4" name="message" onkeyup="keyup(this);" autocomplete="on" maxlength="160" required="" placeholder="type sms here">{{message}}</textarea></div>
+                            <div ><small id="txtmsg">0/160 characters</small></div>
+                            <div class="form-group"><label for="contacts"><strong>contacts</strong><br></label><textarea class="form-control" id="contacts" rows="4" name="contacts">{{contacts}}</textarea><span style="text-align: center;"><small>separate different contacts with a coma ","</small></span></div><span style="font-weight: bold;">Select groups</span>
                             <hr>
                             <div class="form-group">
                                 <div class="col">
@@ -39,5 +40,21 @@
     </div>
 {% endblock %}
 {% block scripts %}
+<script>
+    function txtshow(txt2show) {
+        document.getElementById('txtmsg').innerHTML = txt2show;
+    }
     
+    function keyup(what) {
+        const maxKeys = 160;
+        let str = new String(what.value);
+        let len = str.length;
+        let showstr = `${len}/${maxKeys} character Limit`;
+        if (len > maxKeys) {
+            showstr += '<br>Exceeding the limit will resolve in being charged twice per message';
+        }
+    
+        txtshow(showstr);
+    }
+    </script>
 {% endblock %}

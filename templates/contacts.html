@@ -2,27 +2,31 @@
 {% block title %}Contacts{% endblock %}
 {% block pageName %}Contacts{% endblock %}
 {% block content %}
-    <div class="card" style="border-color: rgb(255,255,255);">
+<div class="container">
+    <div class="card">
         <div class="card-body">
+            <div>
+                <h3 class="text-center">Contacts app</h3>
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                                <span>{{ message }}</span>
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        {% endfor %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            <span>{{ message }}</span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
                     {% endif %}
                 {% endwith %}
+            </div>
             <div>
                 <div class="row text-break justify-content-center">
                     <div class="col-11 col-md-12 col-lg-12 col-xl-10">
                         <div class="row">
                             <div class="col">
                                 <div class="input-group">
-                                    <div class="input-group-prepend"></div><input class="form-control autocomplete" type="text" placeholder="search">
+                                    <div class="input-group-prepend"></div><input class="form-control autocomplete" type="text" placeholder="search" id="search">
                                     <div class="input-group-append"><button class="btn btn-primary" type="button"><i class="fa fa-search"></i></button></div>
                                 </div>
                             </div>
@@ -30,49 +34,12 @@
                         <div class="row">
                             <div class="col offset-xl-0">
                                 <div class="table-responsive table mt-2" id="dataTable-1" role="grid" aria-describedby="dataTable_info">
-                                    <table class="table dataTable my-0" id="dataTable">
-                                        <thead>
-                                            <tr>
-                                                <th style="text-align: left;">Name</th>
-                                                <th style="text-align: left;">No.</th>
-                                                <th style="text-align: left;">Group</th>
-                                                <th style="text-align: left;">Options</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Airi Satou</td>
-                                                <td>Accountant</td>
-                                                <td>Tokyo</td>
-                                                <td><a class="btn btn-sm" role="button" href="admin/sendSMS/{{id}}"><i class="fa fa-send" style="color: var(--success);"></i></a><a class="btn btn-sm" role="button" href="admin/edit/{{id}}" style="color: var(--blue);"><i class="fa fa-edit" style="font-size: 16px;"></i></a><a class="btn btn-sm" role="button" href="admin/delete/{{id}}" style="color: var(--red);"><i class="fa fa-close" style="font-size: 16px;"></i></a></td>
-                                            </tr>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td style="text-align: left;"><strong>Name</strong></td>
-                                                <td style="text-align: left;"><strong>No.</strong></td>
-                                                <td style="text-align: left;"><strong>Group</strong></td>
-                                                <td style="font-weight: bold;text-align: left;">Edit</td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 align-self-center">
-                                        <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 27</p>
+                                    <div id="datalist">
+
                                     </div>
-                                    <div class="col-md-6">
-                                        <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
-                                            <ul class="pagination">
-                                                <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
-                                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                                <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-                                            </ul>
-                                        </nav>
-                                    </div>
+                                    
                                 </div>
+                                <div class="row"></div>
                             </div>
                         </div>
                     </div>
@@ -80,7 +47,61 @@
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
 {% block scripts %}
+<script>
+    function searchFxn(e){
+            $("#datalist").empty();
+            $.ajax({
+                method:"post",
+                url:"/livesearch",
+                data:{text:$("#search").val()},
+                
+                success:function(res){
+                    var counter=1;
+                    if(res!=''){
+                        var data = "<table class=&quot;table dataTable my-0 &quot; id=&quot;dataTable&quot;>\
+                                                <thead>\
+                                                    <tr>\
+                                                        <th>No.</th>\
+                                                        <th>Name</th>\
+                                                        <th>Mobile.</th>\
+                                                        <th>Edit</th>\
+                                                    </tr>\
+                                                </thead>\
+                                                <tbody>"
+                        $.each(res,function(index,value){
+                            data += `<tr>
+                                <td>${counter++}</td>
+                                <td>${value.name}</td>
+                                <td>${value.work_phone.padStart(10, '0')}</td>
+                                <td><a class='btn btn-sm' role='button' href='{{url_for('edit_contact',id='')}}${value.id}'><i class='fa fa-edit' style= 'color: var(--blue);font-size: 16px;'></i></a> <a class= 'btn btn-sm' role= 'button' onclick="return confirm('Are you sure you want to delete ${value.surname} ${value.first_name} from Database?');" href='{{url_for('delete_contact',id='')}}${value.id}'><i class= 'fa fa-close' style= 'color: var(--red);font-size: 16px;' ></i></a></td>
+                                </tr>`;
+                        });
+                        data += "</tbody>\
+                                                <tfoot>\
+                                                    <tr>\
+                                                        <td><strong>No.</strong></td>\
+                                                        <td><strong>Name</strong></td>\
+                                                        <td><strong>Mobile.</strong></td>\
+                                                        <td><strong>Edit</strong></td>\
+                                                    </tr>\
+                                                </tfoot>\
+                                            </table>";}
+                    else{
+                        data="No results Found"
+                    }    
+                    $("#datalist").html(data);
+
+                }
+            });
+        }
+    // Searches when an input is typed
+    $(document).ready(function(){
+        searchFxn()
+        $("#search").on("input",searchFxn);
+    });
     
+</script>
 {% endblock %}
