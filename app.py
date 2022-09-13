@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request,redirect,flash,url_for,g,session
+from flask import Flask,render_template,request,redirect,jsonify,flash,url_for,g,session
 from flask_mysqldb import MySQL
 import os
 import bcrypt
@@ -236,8 +236,49 @@ def bulkContacts():
  # show contacts
  #edit contact
  # Delete contact
- #---------------------------------   
+ #---------------------------------  
+@app.route('/admin/contacts',methods=['GET','POST'])
+def showContacts():
+    if g.loggedIn and g.type=='admin':
+        return render_template('contacts.html')
+    else:
+        return redirect(url_for("login"))
+    
+@app.route("/livesearch", methods=["POST"])
+def livesearch():
+    cur = mysql.connection.cursor()
+    input = request.form["text"]
+    search_num = input
+    if input.startswith("0"):
+        search_num = input[1:]
+    search_num = "%" + str(search_num) + "%"
+    search = "%" + str(input) + "%"
 
+    # print("search Term is  :{}".format(search),flush=True)
+    cur.execute(
+        "SELECT members.id AS id ,members.name AS name,groups.name AS group_name, members.groups_id AS groupId, IFNULL(members.phone_number, 'N/A') AS phone_number FROM members INNER JOIN `groups` on members.groups_id=groups.id WHERE members.name LIKE %s  OR members.phone_number LIKE %s OR members.phone_number LIKE %s OR groups.name LIKE %s ORDER BY members.name ASC",(search, search, search_num, search),
+    )
+    result = cur.fetchall()
+    # print("\n\n\n\result is below \n\n\n\n",flush=True)
+    # print(result,flush=True)
+    return jsonify(result)
+
+
+@app.route('/admin/editContact/<string:id>')
+def editContact(id):
+    if g.loggedIn and g.type=='admin':
+        return render_template('editContact.html')
+    else:
+        return redirect(url_for("login"))
+    
+@app.route('/admin/deleteContact/<string:id>')
+def deleteContact(id):
+    if g.loggedIn and g.type=='admin':
+        flash("Contact Deleted Successfully","success")
+        return redirect(request.referrer)
+    else:
+        return redirect(url_for("login"))
+    
 @app.route('/admin/resetPassword',methods=['GET','POST'])
 def resetPassword():
     return render_template('resetPassword.html')

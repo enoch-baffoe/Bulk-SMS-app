@@ -32,9 +32,9 @@
                             </div>
                         </div></br>
                         <div class="row">
-                            <div class="col offset-xl-0">
-                                <div class="table-responsive table mt-2" id="dataTable-1" role="grid" aria-describedby="dataTable_info">
-                                    <div id="datalist">
+                            <div class="col offset-md-2 w-100">
+                                <div class="table-responsive table mt-2 w-100" id="dataTable-1" role="grid" aria-describedby="dataTable_info">
+                                    <div id="datalist" class="w-100">
 
                                     </div>
                                     
@@ -66,17 +66,20 @@
                                                     <tr>\
                                                         <th>No.</th>\
                                                         <th>Name</th>\
+                                                        <th>Group.</th>\
                                                         <th>Mobile.</th>\
                                                         <th>Edit</th>\
                                                     </tr>\
                                                 </thead>\
                                                 <tbody>"
                         $.each(res,function(index,value){
+                            // console.log(value);
                             data += `<tr>
                                 <td>${counter++}</td>
                                 <td>${value.name}</td>
-                                <td>${value.work_phone.padStart(10, '0')}</td>
-                                <td><a class='btn btn-sm' role='button' href='{{url_for('edit_contact',id='')}}${value.id}'><i class='fa fa-edit' style= 'color: var(--blue);font-size: 16px;'></i></a> <a class= 'btn btn-sm' role= 'button' onclick="return confirm('Are you sure you want to delete ${value.surname} ${value.first_name} from Database?');" href='{{url_for('delete_contact',id='')}}${value.id}'><i class= 'fa fa-close' style= 'color: var(--red);font-size: 16px;' ></i></a></td>
+                                <td>${value.group_name}</td>
+                                <td>${value.phone_number.padStart(10, '0')}</td>
+                                <td><a class='btn btn-sm' role='button' href='{{url_for('editContact',id='')}}${value.id}'><i class='fa fa-edit' style= 'color: var(--blue);font-size: 16px;'></i></a> <a class= 'btn btn-sm' role= 'button' onclick="return confirm('Are you sure you want to delete ${value.name}from Database?');" href='{{url_for('deleteContact',id='')}}${value.id}'><i class= 'fa fa-close' style= 'color: var(--red);font-size: 16px;' ></i></a></td>
                                 </tr>`;
                         });
                         data += "</tbody>\
@@ -84,6 +87,7 @@
                                                     <tr>\
                                                         <td><strong>No.</strong></td>\
                                                         <td><strong>Name</strong></td>\
+                                                        <td><strong>Group.</strong></td>\
                                                         <td><strong>Mobile.</strong></td>\
                                                         <td><strong>Edit</strong></td>\
                                                     </tr>\
