@@ -1,7 +1,12 @@
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+apiKey = os.environ.get('API_KEY')
+
 def sendSMS(message,phoneNumbers):
     endPoint = 'https://api.mnotify.com/api/sms/quick'
-    apiKey = 'nY32mlBDbgITrxHlFzt507UgynPxpb8N9bPwxq9IHRC8p'
     data = {
     'recipient[]': phoneNumbers,
     'sender': 'MOCWO',
@@ -13,3 +18,13 @@ def sendSMS(message,phoneNumbers):
     response = requests.post(url, data)
     data = response.json()
     print (data,flush=True)
+    return data
+    
+
+def getBalance():
+    endPoint = 'https://api.mnotify.com/api/balance/sms'
+    url = endPoint + '?key=' + apiKey
+    response = requests.get(url)
+    print(response)
+    data = response.json()
+    return data

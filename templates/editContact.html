@@ -1,0 +1,50 @@
+{% extends "template.html" %}
+{% block title %}Edit Contact{% endblock %}
+{% block pageName %}Edit Contact{% endblock %}
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            <span>{{ message }}</span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <form action="{{ url_for('editContact',id=contact.id) }}" method="post">
+                <div class="form-row">
+                    <div class="col">
+                        <div class="form-group"><label for="name"><strong>Name</strong></label><input class="form-control" type="text" id="name" placeholder="Name" name="name" value="{{contact.name}}"></div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group"><label for="phone_number"><strong>Phone Number</strong><br></label><input class="form-control" type="tel" name="phone_number" id="phone_number" placeholder="phone Number" value="{{contact.phone_number}}"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col">
+                        <div class="form-group"><label for="first_name"><strong>Contact group</strong><br></label><select class="form-control" name="group">
+                                <optgroup label="Select Group">
+                                    {%for item in groups%}
+                                    <option value="{{item.id}}" {{'selected' if item.id==contact.id}}>{{item.name}}</option>
+                                    {%endfor%}
+                                </optgroup>
+                            </select></div>
+                    </div>
+                    <div class="col">
+                        
+                    </div>
+                </div>
+                <div class="form-group"><button class="btn btn-primary" type="submit">Save Changes</button></div>
+            </form>
+        </div>
+    </div>
+    
+{% endblock %}
+{% block scripts %}
+    
+{% endblock %}

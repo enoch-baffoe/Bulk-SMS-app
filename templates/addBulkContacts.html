@@ -20,7 +20,7 @@
                 <div class="row text-break justify-content-center">
                     <div class="col-11 col-md-9 col-xl-8">
                         <form action="{{url_for('addBulkContacts')}}" method="post" enctype="multipart/form-data">
-                            <div class="form-group"><label for="signature"><strong>Add contacts file</strong><br></label><input class="form-control-file" type="file" name="bulkContacts" required=""></div><span style="font-weight: bold;">Select Group</span>
+                            <div class="form-group"><label for="signature"><strong>Add contacts file</strong><br></label><input class="form-control-file" type="file" accept=".xlsx, .xls, .xlm" name="bulkContacts" required=""></div><span style="font-weight: bold;">Select Group</span>
                             <hr>
                             <div class="form-group">
                                 <div class="col">
@@ -33,10 +33,10 @@
                                 <div class="form-row">
                                     <div class="col text-break"><span><strong><span style="text-decoration: underline;">RULES</span></strong></span>
                                         <ol>
-                                            <li>All data should belong to one group</li>
-                                            <li>Item 2</li>
-                                            <li>Item 3</li>
-                                            <li>Item 4</li>
+                                            <li>All data should belong to <b>one</b> group</li>
+                                            <li>The file being uploaded should be an <b>excel</b> file and all data shoud be on the first sheet</li>
+                                            <li>The file should have two columns named <b>NAME</b> and <b>CONTACT</b> in caps. </li>
+                                            <li>Phone numbers should be in the 0241234567 format</li>
                                         </ol>
                                     </div>
                                 </div>

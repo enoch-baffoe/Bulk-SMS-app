@@ -23,7 +23,7 @@
                             <div class="col"><a class="btn btn-primary" role="button" style="width: 100%;" href="{{ url_for('quickSMS') }}">Send SMS</a></div>
                         </div></br>
                         <div class="row">
-                            <div class="col"><a class="btn btn-primary text-break" role="button" style="width: 100%;" href="{{ url_for('showContacts') }}"">show Contacts</a></div>
+                            <div class="col"><a class="btn btn-primary text-break" role="button" style="width: 100%;" href="{{ url_for('showContacts') }}">show Contacts</a></div>
                         </div></br>
                         <div class="row">
                             <div class="col"><a class="btn btn-primary text-break" role="button" style="width: 100%;" href="{{ url_for('addContact') }}">Add Contact</a></div>
@@ -36,6 +36,11 @@
             </div>
         </div>
     </div>
+    {%if data !=''%}
+    <div class="row d-flex justify-content-center w-100" >
+        <p><b>Balance:</b> {{data.balance}}     <b>Bonus:</b> {{data.bonus}} </p>
+    </div>
+    {%endif%}
 {% endblock %}
 {% block scripts %}
     
